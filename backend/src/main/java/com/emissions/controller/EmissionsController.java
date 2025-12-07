@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/emissions")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://incredible-vacherin-0032d7.netlify.app")
 public class EmissionsController {
     
     @Autowired

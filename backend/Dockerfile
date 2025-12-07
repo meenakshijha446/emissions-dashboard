@@ -1,23 +1,19 @@
-FROM openjdk:17-jdk-slim
+FROM maven:3.9-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
-
-# Download dependencies
-RUN chmod +x ./mvnw
-RUN ./mvnw dependency:go-offline
-
-# Copy source code
 COPY src ./src
 
-# Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# Run the application
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/emissions-dashboard-1.0.0.jar app.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/emissions-dashboard-1.0.0.jar"]
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
